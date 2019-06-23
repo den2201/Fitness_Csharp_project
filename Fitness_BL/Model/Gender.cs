@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Fitness_BL.Model
 {
+    [Serializable]
     /// <summary>
     /// Описываем класс Gender
     /// </summary>
