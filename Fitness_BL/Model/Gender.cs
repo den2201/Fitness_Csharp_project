@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Fitness_BL.Model
 {
-    class Gender
+    /// <summary>
+    /// Описываем класс Gender
+    /// </summary>
+    public class Gender
     {
 
         /// <summary>
@@ -20,7 +23,7 @@ namespace Fitness_BL.Model
         {
             if(string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException("Имя пола не может быть пустым или null"+nameof(name));
+                throw new ArgumentNullException("Имя пола не может быть пустым или null",nameof(name));
             }
             Name = name;
 
@@ -28,7 +31,7 @@ namespace Fitness_BL.Model
 
         public override string ToString()
         {
-            return 
+            return Name;
         }
     }
 }
