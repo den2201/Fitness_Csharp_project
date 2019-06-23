@@ -1,6 +1,8 @@
 ﻿using Fitness_BL.Model;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
 /// <summary>
@@ -13,21 +15,52 @@ namespace Fitness_BL.Controller
         /// <summary>
         /// создаем Свойство типа User в контроллере
         /// </summary>
-        public User User { get; }
+        public List<User> Users { get; }
+        public User CurrentUser { get; set; }
 
+        public bool IsNewUserFlag { get; } = false;
         /// <summary>
         /// Создание нового  контроллера поьзователя
         /// </summary>
         /// <param name="user"></param>
-        public UserController(string userName, string genderName, DateTime birthDay,double weigth,double height)
+        public UserController(string userName)
+
         {
+            if(string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException("Имя пользователя не может быть пустым", nameof(userName));
+            }
             //TODO: проверка
-            var gender = new Gender(genderName);
-             User = new User(userName,gender,birthDay,weigth,height);
-            
+
+            Users = GetUserData();
+            CurrentUser = Users.SingleOrDefault(u => u.Name==userName);
+          if(CurrentUser==null)
+            {
+                IsNewUserFlag = true;
+        CurrentUser = new User(userName);
+                if (IsNewUserFlag)
+                {
+                    Console.WriteLine("Введите пол нового пользователя: ");
+                    string gender = Console.ReadLine();
+                    Console.WriteLine("Введите возраст дату рождения нового пользователя: ");
+                    DateTime birthDay = DateTime.Parse(Console.ReadLine());
+
+                    UserController.SetNewData(gender,birthDay);
+                }
+                  
+                Users.Add(CurrentUser);
+                Save();
+
+            }
         }
 
-        public UserController()
+        
+        
+        /// <summary>
+        /// Получить список пользователей
+        /// </summary>
+        /// <returns></returns>
+        private List<User> GetUserData()
         {
             /// <summary>
             /// Загружаем данные пользователя из файла
@@ -35,16 +68,38 @@ namespace Fitness_BL.Controller
             /// <returns></returns>
 
             var formatter = new BinaryFormatter();
-            using (var fs = new FileStream("user.dat", FileMode.OpenOrCreate))
+            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                if (formatter.Deserialize(fs) is User user)
+                if (formatter.Deserialize(fs) is List<User> users)
                 {
-                    User = user;
+                    return users;
                 }
-                // TODO: Что делать, если пользователя не прочитали
+               
+                    else
+                {
+                    return new List<User>();
+                }
+                               // TODO: Что делать, если пользователя не прочитали
 
 
             }
+
+        }
+        /// <summary>
+        /// Метод добавления данных новому пользователю
+        /// </summary>
+        /// <param name="genderName"></param>
+        /// <param name="birthDate"></param>
+        /// <param name="weight"></param>
+        /// <param name="height"></param>
+
+        public static void SetNewData(string genderName, DateTime birthDate, double weight = 1, double height = 1)
+        {
+            CurrentUser.Gender = new Gender(genderName);
+            CurrentUser.DateOfBirth = birthDate;
+            CurrentUser.Weight = weight;
+            CurrentUser.Height = height;
+
 
         }
         public void Save()
@@ -52,7 +107,7 @@ namespace Fitness_BL.Controller
             var formatter = new BinaryFormatter();
             using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fs, User);
+                formatter.Serialize(fs, Users);
 
             }
         }

@@ -19,18 +19,13 @@ namespace Fitness_CMD
             Console.Clear();
             Console.WriteLine("Введите имя пользователя: ");
             var userName = Console.ReadLine();
-            Console.WriteLine("Введите пол: ");
-            string gender = Console.ReadLine();
-            Console.WriteLine("Введите дату Вашего рождения: ");
-            var birthDay =  DateTime.Parse(Console.ReadLine()); //TODO: Переписать на TRYPARSE
-            Console.WriteLine("Введите Ваш вес: ");
-            double weight = double.Parse(Console.ReadLine());
-            Console.WriteLine("Введите Ваш рос: ");
-            double height = double.Parse(Console.ReadLine());
+            var userController = new UserController(userName);
+          
 
-            var userController = new UserController(userName, gender, birthDay, weight, height);
-            userController.Save();
+            Console.WriteLine(userController.CurrentUser);
 
+            Console.ReadKey();
+           
 
 
             
