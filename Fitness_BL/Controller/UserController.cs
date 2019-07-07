@@ -42,20 +42,47 @@ namespace Fitness_BL.Controller
                 {
                     Console.WriteLine("Введите пол нового пользователя: ");
                     string gender = Console.ReadLine();
-                    Console.WriteLine("Введите возраст дату рождения нового пользователя: ");
-                    DateTime birthDay = DateTime.Parse(Console.ReadLine());
+                    DateTime birthDay;
+                    while (true)
+                    {
+                        Console.WriteLine("Введите возраст дату рождения нового пользователя: ");
+                        if (DateTime.TryParse(Console.ReadLine(), out birthDay))
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Неверный формат даты");
+                        }
+                        
+                        
+                    }
+                    SetNewData(gender,birthDay);
+                    Users.Add(CurrentUser);
+                    Save();
 
-                    UserController.SetNewData(gender,birthDay);
                 }
-                  
-                Users.Add(CurrentUser);
-                Save();
+
 
             }
         }
 
         
-        
+        public static double TryParseDouble(string name)
+        {
+            while(true)
+            Console.WriteLine(@"Введите {name}: ");
+            if (double.TryParse(Console.ReadLine(), out double tryPardedouble))
+            {
+                return tryPardedouble;
+            }
+            else
+            {
+                Console.WriteLine("Неверный формат ввода");
+            }
+        }
+
+
         /// <summary>
         /// Получить список пользователей
         /// </summary>
@@ -93,7 +120,7 @@ namespace Fitness_BL.Controller
         /// <param name="weight"></param>
         /// <param name="height"></param>
 
-        public static void SetNewData(string genderName, DateTime birthDate, double weight = 1, double height = 1)
+        public  void SetNewData(string genderName, DateTime birthDate, double weight = 1, double height = 1)
         {
             CurrentUser.Gender = new Gender(genderName);
             CurrentUser.DateOfBirth = birthDate;
@@ -102,6 +129,11 @@ namespace Fitness_BL.Controller
 
 
         }
+
+        /// <summary>
+        ///Сохранить данные пользователя
+        /// </summary>
+        /// <returns></returns>
         public void Save()
         {
             var formatter = new BinaryFormatter();
@@ -113,10 +145,7 @@ namespace Fitness_BL.Controller
         }
     }
 
-    /// <summary>
-    ///Сохранить данные пользователя
-    /// </summary>
-    /// <returns></returns>
+   
    
 
 }
