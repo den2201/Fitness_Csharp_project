@@ -86,7 +86,7 @@ namespace Fitness_BL.Controller
         /// <summary>
         /// Получить список пользователей
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns   
         private List<User> GetUserData()
         {
             /// <summary>
@@ -97,7 +97,7 @@ namespace Fitness_BL.Controller
             var formatter = new BinaryFormatter();
             using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                if (formatter.Deserialize(fs) is List<User> users)
+                if (fs.Length>0 && formatter.Deserialize(fs) is List<User> users)
                 {
                     return users;
                 }
